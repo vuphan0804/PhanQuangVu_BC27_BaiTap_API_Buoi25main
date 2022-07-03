@@ -1,0 +1,17 @@
+// Helpers
+@import "./Helpers/mixin";
+@import "./Helpers/variables";
+
+// Base
+@import "./Base/reset";
+
+// Components
+@import "./Components/button";
+@import "./Components/card";
+
+// Layouts
+@import "./Layouts/header";
+@import "./Layouts/footer";
+@import "./Layouts/introTeam";
+@import "./Layouts/ourTeam";
+@import "./Layouts/contactTeam";

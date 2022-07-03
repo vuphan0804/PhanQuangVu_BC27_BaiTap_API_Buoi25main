@@ -1,0 +1,11 @@
+$color-collection: (
+  "main": #b61984,
+);
+@each $name, $color in $color-collection {
+  .bg-#{$name} {
+    background-color: $color;
+  }
+  .text-#{$name} {
+    color: $color;
+  }
+}

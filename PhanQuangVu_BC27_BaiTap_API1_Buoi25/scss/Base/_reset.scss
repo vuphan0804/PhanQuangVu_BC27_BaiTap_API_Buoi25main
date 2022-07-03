@@ -1,0 +1,40 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-repeat: no-repea;
+}
+
+html,
+body {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  background-size: cover;
+  background-attachment: fixed;
+  font-weight: 400;
+  line-height: 1.8em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  clear: both;
+  padding: 0 0 0.4em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.container {
+  max-width: 1200px !important;
+}

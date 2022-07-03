@@ -1,0 +1,43 @@
+// Intro Team
+.intro-team {
+  position: relative;
+  .left-content {
+    margin-top: 200px;
+    text-align: left;
+    .column-content {
+      p {
+        color: $color-main;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+      h1 {
+        font-weight: 700;
+        font-size: 3.8rem;
+      }
+    }
+  }
+  .right-content {
+    display: block;
+    margin: 0;
+    line-height: 0;
+    max-width: 100%;
+    height: auto;
+    img {
+      margin-top: 50px;
+    }
+  }
+  .top-image {
+    position: absolute;
+    top: 0;
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      user-select: none;
+    }
+  }
+  .bottom-image {
+    position: absolute;
+    bottom: 0;
+  }
+}

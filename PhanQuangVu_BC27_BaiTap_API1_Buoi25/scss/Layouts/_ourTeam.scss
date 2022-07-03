@@ -1,0 +1,65 @@
+// Our Team
+section.our-team {
+  position: relative;
+  .col-lg-3 {
+    padding: 20px;
+  }
+  .card {
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+    border: none;
+    &:hover {
+      box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    }
+    .card-img-cover {
+      overflow: hidden;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      img.card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        min-width: 100%;
+        transform: scale(1);
+        transition: 0.5s ease-in;
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+    .card-body {
+      padding-left: 2em;
+      padding-right: 2em;
+      text-align: center;
+      .card-title {
+        margin-bottom: unset;
+        .text-country {
+          color: $color-main;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+        .text-name {
+          margin-top: 5px;
+          font-size: 1.35rem;
+          font-weight: 700;
+          display: block;
+        }
+      }
+      .card-text {
+        font-size: 15px;
+      }
+    }
+  }
+  .bg-img-down {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    top: 219px;
+  }
+  
+  .bg-img-up {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+  }
+}
