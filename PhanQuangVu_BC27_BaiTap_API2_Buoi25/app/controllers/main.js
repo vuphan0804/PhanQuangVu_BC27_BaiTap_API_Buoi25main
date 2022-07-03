@@ -78,6 +78,7 @@ const addClient = () => {
     loaiND,
     moTa
   );
+  validationAdd();
   apiAddClient(client)
     .then((result) => {
       main();
@@ -277,42 +278,41 @@ function handleSearch(e) {
 // Validation
 
 function validationAdd() {
-  var taiKhoan = document.getElementById("TaiKhoan").value;
-  var hoTen = document.getElementById("HoTen").value;
-  var matKhau = document.getElementById("MatKhau").value;
-  var email = document.getElementById("Email").value;
-  var hinhAnh = document.getElementById("HinhAnh").value;
-  var loaiND = +document.getElementById("LoaiNguoiDung").value;
-  var ngonNgu = document.getElementById("loaiNgonNgu").value;
-  var workTime = +document.getElementById("workTime").value;
-  var isValid = true;
+  const taiKhoan = document.getElementById("TaiKhoan").value;
+  const hoTen = document.getElementById("HoTen").value;
+  const matKhau = document.getElementById("MatKhau").value;
+  const email = document.getElementById("Email").value;
+  const hinhAnh = document.getElementById("HinhAnh").value;
+  const loaiND = +document.getElementById("loaiNguoiDung").value;
+  const ngonNgu = document.getElementById("loaiNgonNgu").value;
+  let isValid = true;
 
   //Kiểm tra tài khoản nhập vào có hợp lệ hay không
-  const idPattern = new RegExp("^[1-9]+$");
-  const TaiKhoanNotiEl = document.getElementById("taiKhoanNoti");
+  const taiKhoanPattern = new RegExp("^[1-9]+$");
+  const taiKhoanNotiEl = document.getElementById("taiKhoanNoti");
   if (!isRequired(taiKhoan)) {
     isValid = false;
-    TaiKhoanNotiEl.innerHTML = "Tài khoản không được để trống";
-    TaiKhoanNotiEl.style = "display:block";
+    taiKhoanNotiEl.innerHTML = "Tài khoản không được để trống";
+    taiKhoanNotiEl.style = "display:block";
   } else if (!minLength(taiKhoan, 4)) {
     isValid = false;
-    TaiKhoanNotiEl.innerHTML = "Tài khoản phải có ít nhất 4 ký số";
-    TaiKhoanNotiEl.style = "display:block";
+    taiKhoanNotiEl.innerHTML = "Tài khoản phải có ít nhất 4 ký số";
+    taiKhoanNotiEl.style = "display:block";
   } else if (!maxLength(taiKhoan, 6)) {
     isValid = false;
-    TaiKhoanNotiEl.innerHTML = "Tài khoản có tối đa 6 ký số";
-    TaiKhoanNotiEl.style = "display:block";
-  } else if (!idPattern.test(taiKhoan)) {
+    taiKhoanNotiEl.innerHTML = "Tài khoản có tối đa 6 ký số";
+    taiKhoanNotiEl.style = "display:block";
+  } else if (!taiKhoanPattern.test(taiKhoan)) {
     isValid = false;
-    TaiKhoanNotiEl.innerHTML = "Tài khoản chỉ bao gồm số";
-    TaiKhoanNotiEl.style = "display:block";
+    taiKhoanNotiEl.innerHTML = "Tài khoản chỉ bao gồm số";
+    taiKhoanNotiEl.style = "display:block";
   } else if (!duplicateTest(taiKhoan)) {
     isValid = false;
-    TaiKhoanNotiEl.innerHTML = "Tài khoản đã tồn tại";
-    TaiKhoanNotiEl.style = "display:block";
+    taiKhoanNotiEl.innerHTML = "Tài khoản đã tồn tại";
+    taiKhoanNotiEl.style = "display:block";
   } else {
-    TaiKhoanNotiEl.innerHTML = "";
-    TaiKhoanNotiEl.style = "display:none";
+    taiKhoanNotiEl.innerHTML = "";
+    taiKhoanNotiEl.style = "display:none";
   }
   //hoTen Validation
   const hoTenPattern = new RegExp(
@@ -348,81 +348,64 @@ function validationAdd() {
     emailNotiEl.style = "display:none";
   }
   //Password Validation
-  var pswPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,10}$/;
-  var passwordNotiEl = document.getElementById("passwordNoti");
-  if (!isRequired(password)) {
+  const matKhauPattern =
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,10}$/;
+  const matKhauNotiEl = document.getElementById("matKhaudNoti");
+  if (!isRequired(matKhau)) {
     isValid = false;
-    passwordNotiEl.innerHTML = "Password không được để trống";
-    passwordNotiEl.style = "display:block";
-  } else if (!minLength(password, 6)) {
+    matKhauNotiEl.innerHTML = "Password không được để trống";
+    matKhauNotiEl.style = "display:block";
+  } else if (!minLength(matKhau, 6)) {
     isValid = false;
-    passwordNotiEl.innerHTML = "Password phải có ít nhất 6 ký tự";
-    passwordNotiEl.style = "display:block";
-  } else if (!maxLength(password, 10)) {
+    matKhauNotiEl.innerHTML = "Password phải có ít nhất 6 ký tự";
+    matKhauNotiEl.style = "display:block";
+  } else if (!maxLength(matKhau, 10)) {
     isValid = false;
-    passwordNotiEl.innerHTML = "Password có tối đa 10 ký tự";
-    passwordNotiEl.style = "display:block";
-  } else if (!pswPattern.test(password)) {
+    matKhauNotiEl.innerHTML = "Password có tối đa 10 ký tự";
+    matKhauNotiEl.style = "display:block";
+  } else if (!matKhauPattern.test(matKhau)) {
     isValid = false;
-    passwordNotiEl.innerHTML =
+    matKhauNotiEl.innerHTML =
       "Password phải chứa ít nhất 1 số, 1 ký tự in hoa, 1 ký tự đặc biệt";
-    passwordNotiEl.style = "display:block";
+    matKhauNotiEl.style = "display:block";
   } else {
-    passwordNotiEl.innerHTML = "";
-    passwordNotiEl.style = "display:none";
+    matKhauNotiEl.innerHTML = "";
+    matKhauNotiEl.style = "display:none";
   }
 
-  //Date Validation
-  var dateWorkNotiEl = document.getElementById("dateWorkNoti");
-  if (!isRequired(dateWork)) {
+  // Image Validation
+  const hinhAnhNotiEl = document.getElementById("hinhAnhNoti");
+  if (!isRequired(hinhAnh)) {
     isValid = false;
-    document.getElementById("dateWorkNoti").innerHTML =
-      "Ngày làm không được để trống";
-    document.getElementById("dateWorkNoti").style = "display:block";
+    hinhAnhNotiEl.innerHTML = "Hình ảnh không được để trống";
+    hinhAnhNotiEl.style = "display:block";
   } else {
-    document.getElementById("dateWorkNoti").innerHTML = "";
-    document.getElementById("dateWorkNoti").style = "display:none";
+    hinhAnhNotiEl.innerHTML = "";
+    hinhAnhNotiEl.style = "display:none";
   }
 
-  //Base Salary Validation
-  var baseSalaryNotiEl = document.getElementById("baseSalaryNoti");
-  if (!isRequired(`'${baseSalary}'`)) {
+  // Type Client
+  const loaiNguoiDungNotiEl = document.getElementById("loaiNguoiDungNoti");
+  if (!isRequired(hinhAnh)) {
     isValid = false;
-    baseSalaryNotiEl.innerHTML = "Tiền lương không được để trống";
-    baseSalaryNotiEl.style = "display:block";
-  } else if (baseSalary < 1e6 || baseSalary > 20e6) {
-    isValid = false;
-    baseSalaryNotiEl.innerHTML = "Tiền lương phải từ 1 000 000 - 20 000 000 ";
-    baseSalaryNotiEl.style = "display:block";
+    loaiNguoiDungNotiEl.innerHTML = "Vui lòng chọn loại người dùng";
+    loaiNguoiDungNotiEl.style = "display:block";
   } else {
-    baseSalaryNotiEl.innerHTML = "";
-    baseSalaryNotiEl.style = "display:none";
+    loaiNguoiDungNotiEl.innerHTML = "";
+    loaiNguoiDungNotiEl.style = "display:none";
   }
-  //Position Validation
-  var positionNotiEl = document.getElementById("positionNoti");
-  if (position === "Chọn chức vụ") {
+
+  // Language
+  const loaiNgonNguNotiEl = document.getElementById("loaiNgonNguNoti");
+  if (!isRequired(hinhAnh)) {
     isValid = false;
-    positionNotiEl.innerHTML =
-      "Chọn chức vụ hợp lệ (Sếp, Trưởng phòng, Nhân viên";
-    positionNotiEl.style = "display:block";
+    loaiNgonNguNotiEl.innerHTML = "Vui lòng chọn loại ngôn ngữ";
+    loaiNgonNguNotiEl.style = "display:block";
   } else {
-    positionNotiEl.innerHTML = "";
-    positionNotiEl.style = "display:none";
+    loaiNgonNguNotiEl.innerHTML = "";
+    loaiNgonNguNotiEl.style = "display:none";
   }
-  //Work Time Validation
-  var workTimeNotiEl = document.getElementById("workTimeNoti");
-  if (!isRequired(workTime)) {
-    isValid = false;
-    workTimeNotiEl.innerHTML = "Số giờ làm không được để trống";
-    workTimeNotiEl.style = "display:block";
-  } else if (workTime < 80 || workTime > 200) {
-    isValid = false;
-    workTimeNotiEl.innerHTML = "Số giờ làm trong tháng phải từ 80 - 200 giờ";
-    workTimeNotiEl.style = "display:block";
-  } else {
-    workTimeNotiEl.innerHTML = "";
-    workTimeNotiEl.style = "display:none";
-  }
+  // Finally
   return isValid;
 }
 
