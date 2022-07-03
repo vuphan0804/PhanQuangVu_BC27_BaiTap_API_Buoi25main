@@ -1,3 +1,5 @@
+let clientList = [];
+console.log(clientList);
 const main = () => {
   apiGetClients().then(function (result) {
     const clients = result.data;
@@ -9,9 +11,12 @@ const main = () => {
         client.matKhau,
         client.hoTen,
         client.email,
+        client.loaiND,
         client.ngonNgu,
-        client.loaiND
+        client.moTa,
+        client.hinhAnh
       );
+      clientList.push(clients[i]);
     }
     display(clients);
   });
@@ -26,8 +31,8 @@ const display = (clients) => {
         <tr>
           <td>${i + 1}</td>
           <td>${client.taiKhoan}</td>
-          <td>${client.matKhau}</td>
           <td>${client.hoTen}</td>
+          <td>${client.matKhau}</td>
           <td>${client.email}</td>
           <td>${client.ngonNgu}</td>
           <td>${client.loaiND}</td>
@@ -73,20 +78,22 @@ const addClient = () => {
     hoTen,
     matKhau,
     email,
-    hinhAnh,
-    ngonNgu,
     loaiND,
-    moTa
+    ngonNgu,
+    moTa,
+    hinhAnh
   );
-  validationAdd();
-  apiAddClient(client)
-    .then((result) => {
-      main();
-      resetForm();
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  validationAdd(client);
+  if (validationAdd(client) !== false) {
+    apiAddClient(client)
+      .then((result) => {
+        main();
+        resetForm();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 };
 
 // Call API delete client
@@ -118,19 +125,22 @@ const updateClient = () => {
     hoTen,
     matKhau,
     email,
-    hinhAnh,
-    ngonNgu,
     loaiND,
-    moTa
+    ngonNgu,
+    moTa,
+    hinhAnh
   );
-  apiUpdateClient(client)
-    .then(function (result) {
-      main();
-      resetForm();
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  validationUpdate(client);
+  if (validationUpdate(client) !== false) {
+    apiUpdateClient(client)
+      .then(function (result) {
+        main();
+        resetForm();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 };
 
 // Handle reset form and close modal
@@ -275,9 +285,45 @@ function handleSearch(e) {
   });
 }
 
+// Validation function
+
+function isRequired(value) {
+  if (!value) {
+    return false;
+  }
+
+  return true;
+}
+
+function minLength(value, limit) {
+  if (value.length < limit) {
+    return false;
+  }
+
+  return true;
+}
+
+function maxLength(value, limit) {
+  if (value.length > limit) {
+    return false;
+  }
+
+  return true;
+}
+
+function duplicateTest(value) {
+  for (let i = 0; i < clientList.length; i++) {
+    if (value === clientList[i].taiKhoan) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Validation
 
-function validationAdd() {
+function validationAdd(client) {
   const taiKhoan = document.getElementById("TaiKhoan").value;
   const hoTen = document.getElementById("HoTen").value;
   const matKhau = document.getElementById("MatKhau").value;
@@ -285,6 +331,7 @@ function validationAdd() {
   const hinhAnh = document.getElementById("HinhAnh").value;
   const loaiND = +document.getElementById("loaiNguoiDung").value;
   const ngonNgu = document.getElementById("loaiNgonNgu").value;
+  const moTa = document.getElementById("MoTa").value;
   let isValid = true;
 
   //Kiểm tra tài khoản nhập vào có hợp lệ hay không
@@ -296,15 +343,11 @@ function validationAdd() {
     taiKhoanNotiEl.style = "display:block";
   } else if (!minLength(taiKhoan, 4)) {
     isValid = false;
-    taiKhoanNotiEl.innerHTML = "Tài khoản phải có ít nhất 4 ký số";
+    taiKhoanNotiEl.innerHTML = "Tài khoản phải có ít nhất 4 ký tự";
     taiKhoanNotiEl.style = "display:block";
   } else if (!maxLength(taiKhoan, 6)) {
     isValid = false;
-    taiKhoanNotiEl.innerHTML = "Tài khoản có tối đa 6 ký số";
-    taiKhoanNotiEl.style = "display:block";
-  } else if (!taiKhoanPattern.test(taiKhoan)) {
-    isValid = false;
-    taiKhoanNotiEl.innerHTML = "Tài khoản chỉ bao gồm số";
+    taiKhoanNotiEl.innerHTML = "Tài khoản có tối đa 6 ký tự";
     taiKhoanNotiEl.style = "display:block";
   } else if (!duplicateTest(taiKhoan)) {
     isValid = false;
@@ -350,7 +393,7 @@ function validationAdd() {
   //Password Validation
   const matKhauPattern =
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,10}$/;
-  const matKhauNotiEl = document.getElementById("matKhaudNoti");
+  const matKhauNotiEl = document.getElementById("matKhauNoti");
   if (!isRequired(matKhau)) {
     isValid = false;
     matKhauNotiEl.innerHTML = "Password không được để trống";
@@ -386,7 +429,7 @@ function validationAdd() {
 
   // Type Client
   const loaiNguoiDungNotiEl = document.getElementById("loaiNguoiDungNoti");
-  if (!isRequired(hinhAnh)) {
+  if (loaiND === "default") {
     isValid = false;
     loaiNguoiDungNotiEl.innerHTML = "Vui lòng chọn loại người dùng";
     loaiNguoiDungNotiEl.style = "display:block";
@@ -397,7 +440,7 @@ function validationAdd() {
 
   // Language
   const loaiNgonNguNotiEl = document.getElementById("loaiNgonNguNoti");
-  if (!isRequired(hinhAnh)) {
+  if (ngonNgu === "default") {
     isValid = false;
     loaiNgonNguNotiEl.innerHTML = "Vui lòng chọn loại ngôn ngữ";
     loaiNgonNguNotiEl.style = "display:block";
@@ -405,40 +448,162 @@ function validationAdd() {
     loaiNgonNguNotiEl.innerHTML = "";
     loaiNgonNguNotiEl.style = "display:none";
   }
+
+  // Description
+  const moTaEl = document.getElementById("moTaNoti");
+  if (!isRequired(moTa)) {
+    isValid = false;
+    moTaEl.innerHTML = "Mô tả không được để trống";
+    moTaEl.style = "display:block";
+  } else if (!maxLength(moTa, 60)) {
+    isValid = false;
+    moTaEl.innerHTML = "Mô tả không vượt quá 60 ký tự";
+    moTaEl.style = "display:block";
+  } else {
+    moTaEl.innerHTML = "";
+    moTaEl.style = "display:none";
+  }
   // Finally
   return isValid;
 }
 
-function isRequired(value) {
-  if (!value) {
-    return false;
+function validationUpdate(client) {
+  const taiKhoan = document.getElementById("TaiKhoan").value;
+  const hoTen = document.getElementById("HoTen").value;
+  const matKhau = document.getElementById("MatKhau").value;
+  const email = document.getElementById("Email").value;
+  const hinhAnh = document.getElementById("HinhAnh").value;
+  const loaiND = +document.getElementById("loaiNguoiDung").value;
+  const ngonNgu = document.getElementById("loaiNgonNgu").value;
+  const moTa = document.getElementById("MoTa").value;
+
+  let isValid = true;
+
+  //Kiểm tra tài khoản nhập vào có hợp lệ hay không
+  const taiKhoanPattern = new RegExp("^[1-9]+$");
+  const taiKhoanNotiEl = document.getElementById("taiKhoanNoti");
+  if (!isRequired(taiKhoan)) {
+    isValid = false;
+    taiKhoanNotiEl.innerHTML = "Tài khoản không được để trống";
+    taiKhoanNotiEl.style = "display:block";
+  } else if (!minLength(taiKhoan, 4)) {
+    isValid = false;
+    taiKhoanNotiEl.innerHTML = "Tài khoản phải có ít nhất 4 ký tự";
+    taiKhoanNotiEl.style = "display:block";
+  } else if (!maxLength(taiKhoan, 6)) {
+    isValid = false;
+    taiKhoanNotiEl.innerHTML = "Tài khoản có tối đa 6 ký tự";
+    taiKhoanNotiEl.style = "display:block";
+  } else {
+    taiKhoanNotiEl.innerHTML = "";
+    taiKhoanNotiEl.style = "display:none";
+  }
+  //hoTen Validation
+  const hoTenPattern = new RegExp(
+    "^[a-z0-9A-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$"
+  );
+  const hoTenNotiEl = document.getElementById("hoTenNoti");
+  if (!isRequired(hoTen)) {
+    isValid = false;
+    hoTenNotiEl.innerHTML = "Tên nhân viên không được để trống";
+    hoTenNotiEl.style = "display:block";
+  } else if (!hoTenPattern.test(hoTen)) {
+    isValid = false;
+    hoTenNotiEl.innerHTML = "Tên nhân viên chứa kí tự không hợp lệ";
+    hoTenNotiEl.style = "display:block";
+  } else {
+    hoTenNotiEl.innerHTML = "";
+    hoTenNotiEl.style = "display:none";
   }
 
-  return true;
-}
-
-function minLength(value, limit) {
-  if (value.length < limit) {
-    return false;
+  //Email Validation
+  const emailPattern = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$");
+  const emailNotiEl = document.getElementById("emailNoti");
+  if (!isRequired(email)) {
+    isValid = false;
+    emailNotiEl.innerHTML = "Email không được để trống";
+    emailNotiEl.style = "display:block";
+  } else if (!emailPattern.test(email)) {
+    isValid = false;
+    emailNotiEl.innerHTML = "Email không đúng định dạng";
+    emailNotiEl.style = "display:block";
+  } else {
+    emailNotiEl.innerHTML = "";
+    emailNotiEl.style = "display:none";
+  }
+  //Password Validation
+  const matKhauPattern =
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,10}$/;
+  const matKhauNotiEl = document.getElementById("matKhauNoti");
+  if (!isRequired(matKhau)) {
+    isValid = false;
+    matKhauNotiEl.innerHTML = "Password không được để trống";
+    matKhauNotiEl.style = "display:block";
+  } else if (!minLength(matKhau, 6)) {
+    isValid = false;
+    matKhauNotiEl.innerHTML = "Password phải có ít nhất 6 ký tự";
+    matKhauNotiEl.style = "display:block";
+  } else if (!maxLength(matKhau, 10)) {
+    isValid = false;
+    matKhauNotiEl.innerHTML = "Password có tối đa 10 ký tự";
+    matKhauNotiEl.style = "display:block";
+  } else if (!matKhauPattern.test(matKhau)) {
+    isValid = false;
+    matKhauNotiEl.innerHTML =
+      "Password phải chứa ít nhất 1 số, 1 ký tự in hoa, 1 ký tự đặc biệt";
+    matKhauNotiEl.style = "display:block";
+  } else {
+    matKhauNotiEl.innerHTML = "";
+    matKhauNotiEl.style = "display:none";
   }
 
-  return true;
-}
-
-function maxLength(value, limit) {
-  if (value.length > limit) {
-    return false;
+  // Image Validation
+  const hinhAnhNotiEl = document.getElementById("hinhAnhNoti");
+  if (!isRequired(hinhAnh)) {
+    isValid = false;
+    hinhAnhNotiEl.innerHTML = "Hình ảnh không được để trống";
+    hinhAnhNotiEl.style = "display:block";
+  } else {
+    hinhAnhNotiEl.innerHTML = "";
+    hinhAnhNotiEl.style = "display:none";
   }
 
-  return true;
-}
-
-function duplicateTest(value) {
-  for (i = 0; i < clients.length; i++) {
-    if (value === clients[i].taiKhoan) {
-      return false;
-    }
+  // Type Client
+  const loaiNguoiDungNotiEl = document.getElementById("loaiNguoiDungNoti");
+  if (loaiND === "default") {
+    isValid = false;
+    loaiNguoiDungNotiEl.innerHTML = "Vui lòng chọn loại người dùng";
+    loaiNguoiDungNotiEl.style = "display:block";
+  } else {
+    loaiNguoiDungNotiEl.innerHTML = "";
+    loaiNguoiDungNotiEl.style = "display:none";
   }
 
-  return true;
+  // Language
+  const loaiNgonNguNotiEl = document.getElementById("loaiNgonNguNoti");
+  if (ngonNgu === "default") {
+    isValid = false;
+    loaiNgonNguNotiEl.innerHTML = "Vui lòng chọn loại ngôn ngữ";
+    loaiNgonNguNotiEl.style = "display:block";
+  } else {
+    loaiNgonNguNotiEl.innerHTML = "";
+    loaiNgonNguNotiEl.style = "display:none";
+  }
+
+  // Description
+  const moTaEl = document.getElementById("moTaNoti");
+  if (!isRequired(moTa)) {
+    isValid = false;
+    moTaEl.innerHTML = "Mô tả không được để trống";
+    moTaEl.style = "display:block";
+  } else if (!maxLength(moTa, 60)) {
+    isValid = false;
+    moTaEl.innerHTML = "Mô tả không vượt quá 60 ký tự";
+    moTaEl.style = "display:block";
+  } else {
+    moTaEl.innerHTML = "";
+    moTaEl.style = "display:none";
+  }
+  // Finally
+  return isValid;
 }
